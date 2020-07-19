@@ -3,15 +3,14 @@
     <title>Login</title>
   </head>
   <body>
-    <a href="/auth/logout">Logout</a>
-    <a href="/auth/login">Login</a>
-    <a href="/">Homepage</a>
-
+    <%- include('./partials/nav'); %>
     <header>
-      <h1>loggin in</h1>
+      <h1>log in using</h1>
     </header>
     <main>
       <a class="github-btn" href="/auth/github">github</a>
     </main>
+
+    <%- include('./partials/footer.ejs'); %>
   </body>
 </html>

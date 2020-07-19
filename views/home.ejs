@@ -4,8 +4,7 @@
     <title>Home</title>
   </head>
   <body>
-    <a href="/auth/logout">Logout</a>
-    <a href="/auth/login">Login</a>
-    <a href="/">Homepage</a>
+    <!-- view content based on login status -->
+    <%- include("./partials/nav"); %> <%- include('./partials/footer.ejs'); %>
   </body>
 </html>

@@ -3,7 +3,7 @@ const passport = require("passport");
 const router = require("express").Router();
 
 router.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", { user: req.user });
 });
 
 router.get(
@@ -14,11 +14,12 @@ router.get(
 );
 
 router.get("/logout", (req, res) => {
-  res.send("logged out");
+  req.logOut();
+  res.redirect("/");
 });
 
 router.get("/github/cb", passport.authenticate("github"), (req, res) => {
-  res.send(req.user);
+  res.redirect("/profile/");
 });
 
 module.exports = router;

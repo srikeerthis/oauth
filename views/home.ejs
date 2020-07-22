@@ -2,9 +2,12 @@
   <head>
     <meta charset="utf8" />
     <title>Home</title>
+    <%- include('./partials/head'); %>
   </head>
   <body>
     <!-- view content based on login status -->
-    <%- include("./partials/nav"); %> <%- include('./partials/footer.ejs'); %>
+    <%- include("./partials/nav"); %>
+    <p>Hi welcome to the website</p>
+    <%- include('./partials/footer.ejs'); %>
   </body>
 </html>

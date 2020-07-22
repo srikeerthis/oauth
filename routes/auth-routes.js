@@ -27,6 +27,13 @@ router.get(
   })
 );
 
+router.get(
+  "/facebook",
+  passport.authenticate("facebook", {
+    scope: ["profile"],
+  })
+);
+
 router.get("/logout", (req, res) => {
   req.logOut();
   res.redirect("/");
@@ -41,6 +48,10 @@ router.get("/google/cb", passport.authenticate("google"), (req, res) => {
 });
 
 router.get("/twitter/cb", passport.authenticate("twitter"), (req, res) => {
+  res.redirect("/profile/");
+});
+
+router.get("/facebook/cb", passport.authenticate("facebook"), (req, res) => {
   res.redirect("/profile/");
 });
 

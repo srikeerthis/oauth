@@ -26,6 +26,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// use css
+app.use(express.static(__dirname + "/public"));
+
 // connect to mongodb
 mongoose.connect(keys.mongodb.mongoURI, () => {
   console.log("connected to db");

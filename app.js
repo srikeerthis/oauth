@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const keys = require("./config/keys");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
+const flash = require("connect-flash");
 
 const app = express();
 
@@ -28,23 +29,30 @@ app.use(passport.session());
 
 // use css
 app.use(express.static(__dirname + "/public"));
+//middleware to readurl
+app.use(express.urlencoded({ extended: true }));
 
 // connect to mongodb
-mongoose.connect(keys.mongodb.mongoURI, () => {
-  console.log("connected to db");
-});
+mongoose.connect(
+  keys.mongodb.mongoURI,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  () => {
+    console.log("connected to db");
+    // listen for requests after conncection to db
+    app.listen(3000, () => {
+      console.log("listening on port 3000");
+    });
+  }
+);
 
 //set up routes
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 
-//create homepage
+app.use(flash());
 
+//create homepage
 app.get("/", (req, res) => {
   //send object to check status and display content
   res.render("home", { user: req.user });
-});
-
-app.listen(3000, () => {
-  console.log("listening on port 3000");
 });

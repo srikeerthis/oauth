@@ -3,8 +3,34 @@ const passport = require("passport");
 const router = require("express").Router();
 
 router.get("/login", (req, res) => {
-  res.render("login", { user: req.user });
+  res.render(
+    "login",
+    { user: req.user }
+    //  { message: req.flash("loginMessage") }
+  );
 });
+
+router.post(
+  "/login",
+  passport.authenticate("login", {
+    successRedirect: "/profile/",
+    failureRedirect: "/auth/login",
+    failureFlash: true,
+  })
+);
+
+router.get("/signup", (req, res) => {
+  res.render("signup");
+});
+
+router.post(
+  "/signup",
+  passport.authenticate("signup", {
+    successRedirect: "/profile/",
+    failureRedirect: "/auth/signup",
+    failureFlash: true,
+  })
+);
 
 router.get(
   "/github",

@@ -46,10 +46,10 @@ mongoose.connect(
 );
 
 //set up routes
+app.use(flash());
+
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
-
-app.use(flash());
 
 //create homepage
 app.get("/", (req, res) => {

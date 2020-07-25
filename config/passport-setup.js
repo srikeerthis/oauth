@@ -1,14 +1,16 @@
 const passport = require("passport");
-const githubStatergy = require("passport-github");
-const googleStatergy = require("passport-google-oauth20");
-const twitterStatergy = require("passport-twitter");
-const facebookStatergy = require("passport-facebook");
+const githubStrategy = require("passport-github");
+const googleStrategy = require("passport-google-oauth20");
+const twitterStrategy = require("passport-twitter");
+const facebookStrategy = require("passport-facebook");
+const localStrategy = require("passport-local");
 
+const bcrypt = require("bcrypt");
 const keys = require("./keys");
 const User = require("../models/user-model");
 
 passport.use(
-  new githubStatergy(
+  new githubStrategy(
     {
       //option for github stratergy
       clientID: keys.github.clientID,
@@ -17,13 +19,13 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       //check if user exists
-      User.findOne({ oauthId: profile.id }).then((currentUser) => {
+      User.findOne({ "oauth.authId": profile.id }).then((currentUser) => {
         if (currentUser) {
           done(null, currentUser);
         } else {
           new User({
-            username: profile.displayName,
-            oauthId: profile.id,
+            "oauth.username": profile.displayName,
+            "oauth.authId": profile.id,
           })
             .save()
             .then((newUser) => {
@@ -37,7 +39,7 @@ passport.use(
 );
 
 passport.use(
-  new googleStatergy(
+  new googleStrategy(
     {
       //option for github stratergy
       clientID: keys.google.clientID,
@@ -46,13 +48,13 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       //check if user exists
-      User.findOne({ oauthId: profile.id }).then((currentUser) => {
+      User.findOne({ "oauth.authId": profile.id }).then((currentUser) => {
         if (currentUser) {
           done(null, currentUser);
         } else {
           new User({
-            username: profile.displayName,
-            oauthId: profile.id,
+            "oauth.username": profile.displayName,
+            "oauth.authId": profile.id,
           })
             .save()
             .then((newUser) => {
@@ -66,7 +68,7 @@ passport.use(
 );
 
 passport.use(
-  new twitterStatergy(
+  new twitterStrategy(
     {
       //option for github stratergy
       consumerKey: keys.twitter.consumerKey,
@@ -75,13 +77,13 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       //check if user exists
-      User.findOne({ oauthId: profile.id }).then((currentUser) => {
+      User.findOne({ "oauth.authId": profile.id }).then((currentUser) => {
         if (currentUser) {
           done(null, currentUser);
         } else {
           new User({
-            username: profile.displayName,
-            oauthId: profile.id,
+            "oauth.username": profile.displayName,
+            "oauth.authId": profile.id,
           })
             .save()
             .then((newUser) => {
@@ -95,7 +97,7 @@ passport.use(
 );
 
 passport.use(
-  new facebookStatergy(
+  new facebookStrategy(
     {
       //option for github stratergy
       clientID: keys.facebook.clientID,
@@ -104,13 +106,13 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       //check if user exists
-      User.findOne({ oauthId: profile.id }).then((currentUser) => {
+      User.findOne({ "oauth.authId": profile.id }).then((currentUser) => {
         if (currentUser) {
           done(null, currentUser);
         } else {
           new User({
-            username: profile.displayName,
-            oauthId: profile.id,
+            "oauth.username": profile.displayName,
+            "oauth.authId": profile.id,
           })
             .save()
             .then((newUser) => {
@@ -122,6 +124,79 @@ passport.use(
     }
   )
 );
+
+passport.use(
+  "signup",
+  new localStrategy(
+    {
+      passReqToCallback: true, // allows us to pass back the entire request to the callback
+    },
+    (req, username, password, done) => {
+      User.findOne({ "local.username": username }, function (err, user) {
+        if (err) return done(err);
+
+        // check to see if theres already a user with that email
+        if (user) {
+          return done(
+            null,
+            false,
+            req.flash("signupMessage", "That email is already taken.")
+          );
+        } else {
+          // if there is no user with that email
+          // create the user
+          var newUser = new User({
+            // set the user's local credentials
+            "local.username": username,
+            "local.password": generateHash(password),
+          });
+
+          // save the user
+          newUser.save(function (err) {
+            if (err) throw err;
+            console.log("account created");
+            return done(null, newUser);
+          });
+        }
+      });
+    }
+  )
+);
+
+passport.use(
+  "login",
+  new localStrategy(
+    {
+      passReqToCallback: true, // allows us to pass back the entire request to the callback
+    },
+    (req, username, password, done) => {
+      User.findOne({ "local.username": username }, function (err, user) {
+        if (err) return done(err);
+        // check to see if theres already a user with that email
+        if (!user) {
+          return done(null, false, req.flash("loginMessage", "No user found"));
+        }
+        if (!validPassword(password, user))
+          return done(
+            null,
+            false,
+            req.flash("loginMessage", "Oops! Wrong password.")
+          ); // create the loginMessage and save it to session as flashdata
+
+        // all is well, return successful user
+        return done(null, user);
+      });
+    }
+  )
+);
+
+var generateHash = function (password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
+
+var validPassword = function (password, user) {
+  return bcrypt.compareSync(password, user.local.password);
+};
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

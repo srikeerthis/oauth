@@ -38,10 +38,6 @@ mongoose.connect(
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => {
     console.log("connected to db");
-    // listen for requests after conncection to db
-    app.listen(3000, () => {
-      console.log("listening on port 3000");
-    });
   }
 );
 
@@ -55,4 +51,9 @@ app.use("/profile", profileRoutes);
 app.get("/", (req, res) => {
   //send object to check status and display content
   res.render("home", { user: req.user });
+});
+
+// listen for requests after conncection to db
+app.listen(3000, () => {
+  console.log("listening on port 3000");
 });

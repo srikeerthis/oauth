@@ -143,10 +143,10 @@ passport.use(
             req.flash("signupMessage", "That email is already taken.")
           );
         } else {
-          // if there is no user with that email
           // create the user
           var newUser = new User({
             // set the user's local credentials
+            "local.email": req.body.email,
             "local.username": username,
             "local.password": generateHash(password),
           });

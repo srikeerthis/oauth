@@ -7,11 +7,12 @@ const userSchema = new Schema({
     authId: String,
   },
   local: {
+    email: String,
     username: String,
     password: String,
   },
 });
 
-const User = mongoose.model("user", userSchema);
+const User = mongoose.model("users", userSchema);
 
 module.exports = User;

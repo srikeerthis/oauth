@@ -6,9 +6,11 @@
   </head>
   <body>
     <%- include('./partials/nav'); %>
-
+    <!-- display username based on signin  -->
+    <% if (user.local.username){ %>
+    <p>Welcome, <%= user.local.username%></p>
+    <% }else{ %>
     <p>Welcome, <%= user.oauth.username%></p>
-
-    <%- include('./partials/footer'); %>
+    <% } %> <%- include('./partials/footer'); %>
   </body>
 </html>

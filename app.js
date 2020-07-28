@@ -1,5 +1,6 @@
 const express = require("express");
 const authRoutes = require("./routes/auth-routes");
+const forgotRoutes = require("./routes/forgot-routes");
 const profileRoutes = require("./routes/profile-routes");
 const passportSetup = require("./config/passport-setup");
 const mongoose = require("mongoose");
@@ -45,6 +46,7 @@ mongoose.connect(
 app.use(flash());
 
 app.use("/auth", authRoutes);
+app.use("/forgot", forgotRoutes);
 app.use("/profile", profileRoutes);
 
 //create homepage

@@ -121,7 +121,7 @@ router.post("/reset/:token", function (req, res) {
               return res.redirect("/auth/forgot");
             }
             console.log("updating password");
-            user.local.password = generateHash(req.body.password);
+            user.local.password = user.generateHash(req.body.password);
             user.local.resetPasswordToken = undefined;
             user.local.resetPasswordExpires = undefined;
 
@@ -159,9 +159,5 @@ router.post("/reset/:token", function (req, res) {
     }
   );
 });
-
-var generateHash = function (password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
 
 module.exports = router;

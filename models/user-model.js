@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -14,14 +16,6 @@ const userSchema = new Schema({
     resetPasswordExpires: Date,
   },
 });
-
-userSchema.methods.generateHash = function (password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
-
-userSchema.methods.validPassword = function (password, user) {
-  return bcrypt.compareSync(password, user.local.password);
-};
 
 const User = mongoose.model("users", userSchema);
 

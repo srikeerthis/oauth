@@ -148,7 +148,7 @@ passport.use(
             // set the user's local credentials
             "local.email": req.body.email,
             "local.username": username,
-            "local.password": newUser.generateHash(password),
+            "local.password": generateHash(password),
           });
 
           // save the user
@@ -176,7 +176,7 @@ passport.use(
         if (!user) {
           return done(null, false, req.flash("loginMessage", "No user found"));
         }
-        if (!user.validPassword(password, user))
+        if (!validPassword(password, user))
           return done(
             null,
             false,
@@ -190,13 +190,13 @@ passport.use(
   )
 );
 
-// var generateHash = function (password) {
-//   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-// };
+var generateHash = function (password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
 
-// var validPassword = function (password, user) {
-//   return bcrypt.compareSync(password, user.local.password);
-// };
+var validPassword = function (password, user) {
+  return bcrypt.compareSync(password, user.local.password);
+};
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

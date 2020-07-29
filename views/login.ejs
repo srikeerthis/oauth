@@ -7,6 +7,10 @@
     <%- include('./partials/nav'); %>
     <header>
       <div class="container">
+        <% if ( message.length > 0 ) { %>
+          <p><strong><%= message %></strong></p>
+          <% } %>
+          
         <form action="/auth/login" method="post">
           <div class="row">
             <h2 style="text-align:center">Login with Social Media or Manually</h2>

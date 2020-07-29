@@ -3,11 +3,7 @@ const passport = require("passport");
 const router = require("express").Router();
 
 router.get("/login", (req, res) => {
-  res.render(
-    "login",
-    { user: req.user }
-    //  { message: req.flash("loginMessage") }
-  );
+  res.render("login", { user: req.user, message: req.flash("loginMessage") });
 });
 
 router.post(
@@ -20,7 +16,7 @@ router.post(
 );
 
 router.get("/signup", (req, res) => {
-  res.render("signup");
+  res.render("signup",{message: req.flash("signupMessage")});
 });
 
 router.post(
